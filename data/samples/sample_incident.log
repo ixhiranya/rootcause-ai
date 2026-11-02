@@ -1,0 +1,11 @@
+2026-10-15 09:14:01 INFO [api-gateway] Request received: GET /api/orders
+2026-10-15 09:14:01 INFO [orders-service] Fetching orders for customer_id=8421
+2026-10-15 09:14:02 ERROR [database] Connection pool exhausted: maximum connections=10, active connections=10
+2026-10-15 09:14:02 ERROR [orders-service] Database query failed after 3000ms
+2026-10-15 09:14:02 ERROR [orders-service] Exception: TimeoutError: database connection acquisition timed out
+2026-10-15 09:14:02 ERROR [api-gateway] GET /api/orders returned HTTP 500
+2026-10-15 09:14:03 WARN [database] Active connections remain at maximum capacity
+2026-10-15 09:14:10 INFO [health-check] Database server reachable
+2026-10-15 09:14:12 ERROR [orders-service] Connection acquisition failed for customer_id=8421
+2026-10-15 09:14:12 ERROR [api-gateway] GET /api/orders returned HTTP 500
+2026-10-15 09:15:00 INFO [deployment] Release version=2.4.1 deployed successfully
