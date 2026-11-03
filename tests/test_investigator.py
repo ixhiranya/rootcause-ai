@@ -3,12 +3,13 @@ from app.chunking import chunk_log_text, load_text_file
 from app.retrieval import IncidentRetriever
 from app.context_builder import build_context
 from app.investigator import RootCauseInvestigator
+from app.evaluation import evaluate_report
 
 
 def main():
 
     print("=" * 70)
-    print("ROOTCAUSE AI - END-TO-END INVESTIGATION")
+    print("ROOTCAUSE AI - INVESTIGATION WITH AUTOMATIC EVALUATION")
     print("=" * 70)
 
     # 1. Load incident logs
@@ -16,7 +17,7 @@ def main():
         "data/samples/sample_incident.log"
     )
 
-    # 2. Create structural-aware chunks
+    # 2. Structural-aware chunking
     chunks = chunk_log_text(
         text,
         source="sample_incident.log",
@@ -26,16 +27,16 @@ def main():
 
     print(f"\nChunks created: {len(chunks)}")
 
-    # 3. Initialize hybrid retriever
+    # 3. Initialize retriever
     retriever = IncidentRetriever(chunks)
 
-    # 4. User investigation query
+    # 4. Investigation query
     query = "Why are order requests failing with HTTP 500 errors?"
 
-    print("\nInvestigation query:")
+    print("\nQUERY:")
     print(query)
 
-    # 5. Retrieve relevant evidence
+    # 5. Hybrid retrieval
     retrieved_chunks = retriever.hybrid_search(
         query,
         top_k=3,
@@ -44,41 +45,41 @@ def main():
 
     print(f"\nRetrieved chunks: {len(retrieved_chunks)}")
 
-    # 6. Construct evidence context
+    # 6. Context construction
     context_result = build_context(
         retrieved_chunks,
         max_tokens=2500
     )
 
-    print(
-        f"Evidence items: {context_result['evidence_count']}"
-    )
+    context = context_result["context"]
+    evidence = context_result["evidence"]
 
+    if not evidence:
+        raise RuntimeError(
+            "No evidence available for investigation."
+        )
+
+    print(f"Evidence items: {len(evidence)}")
     print(
         f"Estimated context tokens: "
         f"{context_result['estimated_tokens']}"
     )
 
-    if not context_result["context"]:
-        raise RuntimeError("No evidence available for investigation.")
-
-    # 7. Initialize LLM investigator
+    # 7. Generate investigation
     investigator = RootCauseInvestigator(
         model="qwen2.5:3b",
         temperature=0.2,
         max_tokens=800
     )
 
-    # 8. Generate investigation
-    print("\nGenerating root-cause investigation...")
-    print("Please wait for the local model...")
+    print("\nGenerating investigation...")
 
     report = investigator.investigate(
         query=query,
-        context=context_result["context"]
+        context=context
     )
 
-    # 9. Display report
+    # 8. Display investigation
     print("\n" + "=" * 70)
     print("ROOTCAUSE AI INVESTIGATION REPORT")
     print("=" * 70)
@@ -103,13 +104,14 @@ def main():
     print("\nALTERNATIVE HYPOTHESES:")
 
     for item in report["alternative_hypotheses"]:
-        print(f"\nHypothesis: {item['hypothesis']}")
-        print(f"Reason: {item['reason']}")
+        print(f"- {item['hypothesis']}")
+        print(f"  Reason: {item['reason']}")
 
     print("\nRECOMMENDED ACTIONS:")
 
     for index, action in enumerate(
-        report["recommended_actions"], start=1
+        report["recommended_actions"],
+        start=1
     ):
         print(f"{index}. {action}")
 
@@ -118,8 +120,69 @@ def main():
     for item in report["missing_information"]:
         print(f"- {item}")
 
+    # 9. AUTOMATIC EVALUATION
     print("\n" + "=" * 70)
-    print("INVESTIGATION COMPLETED")
+    print("AUTOMATIC EVALUATION")
+    print("=" * 70)
+
+    evaluation = evaluate_report(
+        report=report,
+        evidence=evidence,
+        context=context
+    )
+
+    citation = evaluation["citation_evaluation"]
+    consistency = evaluation["consistency_evaluation"]
+
+    print("\nCITATION VALIDATION:")
+
+    print(
+        "Citation accuracy:",
+        citation["citation_accuracy"]
+    )
+
+    print(
+        "Valid citations:",
+        citation["valid_citations"]
+    )
+
+    print(
+        "Invalid citations:",
+        citation["invalid_citations"]
+    )
+
+    print(
+        "All citations valid:",
+        citation["all_citations_valid"]
+    )
+
+    print("\nEVIDENCE CONSISTENCY:")
+
+    print(
+        "Consistency passed:",
+        consistency["consistency_passed"]
+    )
+
+    print(
+        "Detected facts:",
+        consistency["detected_facts"]
+    )
+
+    if consistency["inconsistencies"]:
+        print("\nDetected inconsistencies:")
+
+        for issue in consistency["inconsistencies"]:
+            print("-", issue["issue"])
+            print("  Model claim:", issue["model_claim"])
+
+    print("\nOVERALL VALIDATION:")
+
+    print(
+        evaluation["overall_validation_passed"]
+    )
+
+    print("\n" + "=" * 70)
+    print("INVESTIGATION AND EVALUATION COMPLETED")
     print("=" * 70)
 
 

@@ -3,35 +3,24 @@ import re
 
 
 def estimate_tokens(text: str) -> int:
-    """
-    Approximate token count.
-
-    This is a lightweight estimate, not an exact
-    model-specific tokenizer.
-    """
+    """Estimate token count using approximately 4 characters per token."""
     return max(1, len(text) // 4)
 
 
 def normalize_text(text: str) -> str:
-    """
-    Normalize text to identify duplicate chunks.
-    """
+    """Normalize text for duplicate detection."""
     return re.sub(r"\s+", " ", text).strip().lower()
 
 
 def build_context(
     retrieved_chunks: list[dict],
-    max_tokens: int = 2500
+    max_tokens: int = 2500,
+    source_text: str = ""
 ) -> dict:
     """
-    Construct an evidence-based context from retrieved chunks.
+    Build deduplicated evidence with original log line references.
 
-    Features:
-    - Duplicate removal
-    - Evidence ID assignment
-    - Source tracking
-    - Token budget management
-    - Structured evidence output
+    start_char and end_char come from the chunking module.
     """
 
     if max_tokens <= 0:
@@ -39,7 +28,6 @@ def build_context(
 
     evidence = []
     seen_chunks = set()
-
     context_parts = []
     total_tokens = 0
 
@@ -50,7 +38,6 @@ def build_context(
         if not text:
             continue
 
-        # Remove duplicate chunks
         normalized = normalize_text(text)
 
         if normalized in seen_chunks:
@@ -62,25 +49,53 @@ def build_context(
         source = chunk.get("source", "unknown")
         score = chunk.get("score")
 
+        # Calculate original line numbers.
+        start_char = chunk.get("start_char")
+        end_char = chunk.get("end_char")
+
+        if (
+            source_text
+            and isinstance(start_char, int)
+            and isinstance(end_char, int)
+        ):
+            start_line = source_text.count(
+                "\n", 0, start_char
+            ) + 1
+
+            end_line = source_text.count(
+                "\n", 0, end_char
+            )
+
+            if end_line < start_line:
+                end_line = start_line
+
+        else:
+            start_line = None
+            end_line = None
+
         evidence_id = f"E{len(evidence) + 1}"
 
-        evidence_header = (
+        if start_line is not None:
+            line_reference = (
+                f"Lines {start_line}-{end_line}"
+            )
+        else:
+            line_reference = "Line numbers unavailable"
+
+        header = (
             f"[{evidence_id}] "
             f"Source: {source} | "
-            f"Chunk ID: {chunk_id}"
+            f"Chunk: {chunk_id} | "
+            f"{line_reference}"
         )
 
         if score is not None:
-            evidence_header += f" | Retrieval Score: {score:.5f}"
+            header += f" | Score: {score:.5f}"
 
-        evidence_block = (
-            f"{evidence_header}\n"
-            f"{text}"
-        )
+        evidence_block = f"{header}\n{text}"
 
         required_tokens = estimate_tokens(evidence_block)
 
-        # Respect the context token budget
         if total_tokens + required_tokens > max_tokens:
             continue
 
@@ -88,6 +103,8 @@ def build_context(
             "evidence_id": evidence_id,
             "source": source,
             "chunk_id": chunk_id,
+            "start_line": start_line,
+            "end_line": end_line,
             "score": score,
             "text": text
         })
@@ -101,7 +118,8 @@ def build_context(
         "context": context,
         "evidence": evidence,
         "evidence_count": len(evidence),
-        "estimated_tokens": estimate_tokens(context)
-            if context else 0,
+        "estimated_tokens": (
+            estimate_tokens(context) if context else 0
+        ),
         "max_tokens": max_tokens
     }

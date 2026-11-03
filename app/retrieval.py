@@ -5,7 +5,10 @@ import requests
 
 from nltk.stem import PorterStemmer
 from rank_bm25 import BM25Plus
-
+from app.storage import (
+    get_chunk_embedding,
+    save_chunk_embedding
+)
 
 # --------------------------------------------------
 # CONFIGURATION
@@ -144,6 +147,7 @@ class IncidentRetriever:
     3. Hybrid retrieval using Reciprocal Rank Fusion.
     """
 
+    
     def __init__(self, chunks: list[dict]):
 
         if not chunks:
@@ -168,15 +172,85 @@ class IncidentRetriever:
         # Initialize semantic retrieval
         # ------------------------------
 
-        print("Generating document embeddings...")
+        print("\nChecking MySQL embedding cache...")
 
-        self.document_embeddings = get_embeddings(
-            [chunk["text"] for chunk in chunks]
-        )
+        self.document_embeddings = [None] * len(chunks)
+
+        missing_indices = []
+
+        for index, chunk in enumerate(chunks):
+
+            db_chunk_id = chunk.get("db_chunk_id")
+
+            # Chunks without database IDs cannot use MySQL caching.
+            if db_chunk_id is None:
+                missing_indices.append(index)
+                continue
+
+            cached_embedding = get_chunk_embedding(
+                db_chunk_id,
+                EMBEDDING_MODEL
+            )
+
+            if (
+                cached_embedding is not None
+                and len(cached_embedding) == 768
+            ):
+                self.document_embeddings[index] = cached_embedding
+
+                print(
+                    f"Using cached embedding for DB chunk "
+                    f"{db_chunk_id}"
+                )
+            else:
+                missing_indices.append(index)
+
+        # ------------------------------
+        # Generate only missing embeddings
+        # ------------------------------
+
+        if missing_indices:
+
+            print(
+                f"Generating {len(missing_indices)} missing embeddings..."
+            )
+
+            missing_texts = [
+                chunks[index]["text"]
+                for index in missing_indices
+            ]
+
+            generated_embeddings = get_embeddings(missing_texts)
+
+            for index, embedding in zip(
+                missing_indices,
+                generated_embeddings
+            ):
+
+                self.document_embeddings[index] = embedding
+
+                db_chunk_id = chunks[index].get("db_chunk_id")
+
+                # Persist only chunks that have database IDs.
+                if db_chunk_id is not None:
+
+                    save_chunk_embedding(
+                        db_chunk_id,
+                        EMBEDDING_MODEL,
+                        embedding
+                    )
+
+                    print(
+                        f"Saved embedding for DB chunk {db_chunk_id}"
+                    )
 
         print(
-            f"Generated {len(self.document_embeddings)} embeddings."
+            f"Semantic index ready: {len(self.document_embeddings)} "
+            f"document embeddings."
         )
+
+    def _get_chunk_identity(self, chunk: dict):
+        return chunk.get("db_chunk_id", chunk["chunk_id"])
 
     # --------------------------------------------------
     # KEYWORD SEARCH - BM25Plus
@@ -270,6 +344,7 @@ class IncidentRetriever:
     # HYBRID SEARCH - RECIPROCAL RANK FUSION
     # --------------------------------------------------
 
+    
     def hybrid_search(
         self,
         query: str,
@@ -280,12 +355,10 @@ class IncidentRetriever:
         """
         Combine BM25Plus and semantic rankings using RRF.
 
-        RRF formula:
+        RRF Score = 1 / (rrf_k + rank)
 
-        RRF Score = 1 / (k + rank)
-
-        Documents appearing near the top of both rankings
-        receive higher combined scores.
+        Each unique chunk receives one contribution from each
+        retrieval strategy in which it appears.
         """
 
         keyword_results = self.keyword_search(
@@ -307,7 +380,7 @@ class IncidentRetriever:
 
         for rank, result in enumerate(keyword_results, start=1):
 
-            chunk_id = result["chunk_id"]
+            chunk_id = self._get_chunk_identity(result)
 
             fused_scores[chunk_id] = (
                 fused_scores.get(chunk_id, 0.0)
@@ -322,7 +395,7 @@ class IncidentRetriever:
 
         for rank, result in enumerate(semantic_results, start=1):
 
-            chunk_id = result["chunk_id"]
+            chunk_id = self._get_chunk_identity(result)
 
             fused_scores[chunk_id] = (
                 fused_scores.get(chunk_id, 0.0)
