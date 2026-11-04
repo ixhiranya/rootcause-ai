@@ -1,0 +1,54 @@
+
+[
+  {
+    "test_id": "TC001",
+    "category": "database",
+    "query": "Why are database requests failing because all connections are occupied?",
+    "relevant_incident_ids": [2, 3, 4, 5]
+  },
+  {
+    "test_id": "TC002",
+    "category": "authentication",
+    "query": "Why are users receiving unauthorized errors due to expired JWT tokens?",
+    "relevant_incident_ids": [6]
+  },
+  {
+    "test_id": "TC003",
+    "category": "api_timeout",
+    "query": "Why are API requests failing with gateway timeout errors?",
+    "relevant_incident_ids": [7]
+  },
+  {
+    "test_id": "TC004",
+    "category": "memory",
+    "query": "Why is the application crashing because it has run out of memory?",
+    "relevant_incident_ids": [8]
+  },
+  {
+    "test_id": "TC005",
+    "category": "network",
+    "query": "Why is the application unable to connect to the remote server?",
+    "relevant_incident_ids": [9]
+  },
+{
+  "test_id": "TC006",
+  "category": "payment_failure",
+  "query": "Why are customer payments failing during credit card processing?",
+  "relevant_incident_ids": [],
+  "is_negative": true
+},
+{
+  "test_id": "TC007",
+  "category": "file_upload",
+  "query": "Why are uploaded PDF files becoming corrupted during file transfer?",
+  "relevant_incident_ids": [],
+  "is_negative": true
+},
+{
+  "test_id": "TC008",
+  "category": "cache_invalidation",
+  "query": "Why is the application displaying stale cached data after database updates?",
+  "relevant_incident_ids": [],
+  "is_negative": true
+}
+]

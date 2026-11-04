@@ -121,10 +121,12 @@ def generate_historical_embeddings():
         "cached_embeddings": cached_count
     }
 
+
 def search_similar_historical_incidents(
     query: str,
     context: str = "",
-    top_k: int = 3
+    top_k: int = 3,
+    min_similarity: float | None = None
 ) -> list[dict]:
 
     if not query or not query.strip():
@@ -132,6 +134,12 @@ def search_similar_historical_incidents(
 
     if top_k < 1:
         raise ValueError("top_k must be at least 1.")
+
+    if (
+        min_similarity is not None
+        and not -1.0 <= min_similarity <= 1.0
+    ):
+        raise ValueError("min_similarity must be between -1 and 1.")
 
     search_text = f"""
     Incident Query:
@@ -184,9 +192,18 @@ def search_similar_historical_incidents(
             "similarity_score": float(similarity)
         })
 
+    # Highest similarity first
     scored_incidents.sort(
         key=lambda item: item["similarity_score"],
         reverse=True
     )
+
+    # Apply threshold only when explicitly supplied
+    if min_similarity is not None:
+        scored_incidents = [
+            incident
+            for incident in scored_incidents
+            if incident["similarity_score"] >= min_similarity
+        ]
 
     return scored_incidents[:top_k]

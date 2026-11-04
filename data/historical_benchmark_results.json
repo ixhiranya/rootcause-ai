@@ -1,0 +1,898 @@
+{
+    "benchmark": "Historical Incident Retrieval Threshold Evaluation",
+    "top_k": 3,
+    "thresholds_tested": [
+        0.6,
+        0.65,
+        0.7,
+        0.75,
+        0.8,
+        0.85,
+        0.9
+    ],
+    "positive_test_count": 5,
+    "negative_test_count": 3,
+    "results": [
+        {
+            "threshold": 0.6,
+            "positive_precision_at_3": 0.46663999999999994,
+            "positive_recall_at_3": 0.95,
+            "positive_mrr": 1.0,
+            "positive_hit_rate": 1.0,
+            "negative_false_positive_rate": 1.0,
+            "negative_rejection_rate": 0.0,
+            "positive_cases": 5,
+            "negative_cases": 3,
+            "case_results": [
+                {
+                    "test_id": "TC001",
+                    "category": "database",
+                    "is_negative": false,
+                    "retrieved_incident_ids": [
+                        4,
+                        2,
+                        3
+                    ],
+                    "similarity_scores": [
+                        0.8553314679658263,
+                        0.8399348650474509,
+                        0.8394105977839101
+                    ],
+                    "precision_at_k": 1.0,
+                    "recall_at_k": 0.75,
+                    "mrr": 1.0,
+                    "hit": true
+                },
+                {
+                    "test_id": "TC002",
+                    "category": "authentication",
+                    "is_negative": false,
+                    "retrieved_incident_ids": [
+                        6,
+                        2,
+                        3
+                    ],
+                    "similarity_scores": [
+                        0.9272113025060418,
+                        0.6583278614033148,
+                        0.6490066465597354
+                    ],
+                    "precision_at_k": 0.3333,
+                    "recall_at_k": 1.0,
+                    "mrr": 1.0,
+                    "hit": true
+                },
+                {
+                    "test_id": "TC003",
+                    "category": "api_timeout",
+                    "is_negative": false,
+                    "retrieved_incident_ids": [
+                        7,
+                        2,
+                        3
+                    ],
+                    "similarity_scores": [
+                        0.9381933196484323,
+                        0.7716007409864002,
+                        0.7669533840883205
+                    ],
+                    "precision_at_k": 0.3333,
+                    "recall_at_k": 1.0,
+                    "mrr": 1.0,
+                    "hit": true
+                },
+                {
+                    "test_id": "TC004",
+                    "category": "memory",
+                    "is_negative": false,
+                    "retrieved_incident_ids": [
+                        8,
+                        2,
+                        4
+                    ],
+                    "similarity_scores": [
+                        0.8482160691024667,
+                        0.7110671183860635,
+                        0.6910327799534708
+                    ],
+                    "precision_at_k": 0.3333,
+                    "recall_at_k": 1.0,
+                    "mrr": 1.0,
+                    "hit": true
+                },
+                {
+                    "test_id": "TC005",
+                    "category": "network",
+                    "is_negative": false,
+                    "retrieved_incident_ids": [
+                        9,
+                        2,
+                        3
+                    ],
+                    "similarity_scores": [
+                        0.854300729464101,
+                        0.6775347805774905,
+                        0.6646139346669888
+                    ],
+                    "precision_at_k": 0.3333,
+                    "recall_at_k": 1.0,
+                    "mrr": 1.0,
+                    "hit": true
+                },
+                {
+                    "test_id": "TC006",
+                    "category": "payment_failure",
+                    "is_negative": true,
+                    "retrieved_incident_ids": [
+                        4,
+                        2,
+                        3
+                    ],
+                    "similarity_scores": [
+                        0.7331771522063298,
+                        0.7155457949091908,
+                        0.7071488685246292
+                    ],
+                    "false_positive": true
+                },
+                {
+                    "test_id": "TC007",
+                    "category": "file_upload",
+                    "is_negative": true,
+                    "retrieved_incident_ids": [
+                        4,
+                        2
+                    ],
+                    "similarity_scores": [
+                        0.6256245493674869,
+                        0.6087327147168942
+                    ],
+                    "false_positive": true
+                },
+                {
+                    "test_id": "TC008",
+                    "category": "cache_invalidation",
+                    "is_negative": true,
+                    "retrieved_incident_ids": [
+                        2,
+                        4,
+                        8
+                    ],
+                    "similarity_scores": [
+                        0.7050049602746811,
+                        0.7023550281677033,
+                        0.6853071203628496
+                    ],
+                    "false_positive": true
+                }
+            ]
+        },
+        {
+            "threshold": 0.65,
+            "positive_precision_at_3": 0.46663999999999994,
+            "positive_recall_at_3": 0.95,
+            "positive_mrr": 1.0,
+            "positive_hit_rate": 1.0,
+            "negative_false_positive_rate": 0.6666666666666666,
+            "negative_rejection_rate": 0.3333333333333333,
+            "positive_cases": 5,
+            "negative_cases": 3,
+            "case_results": [
+                {
+                    "test_id": "TC001",
+                    "category": "database",
+                    "is_negative": false,
+                    "retrieved_incident_ids": [
+                        4,
+                        2,
+                        3
+                    ],
+                    "similarity_scores": [
+                        0.8553314679658263,
+                        0.8399348650474509,
+                        0.8394105977839101
+                    ],
+                    "precision_at_k": 1.0,
+                    "recall_at_k": 0.75,
+                    "mrr": 1.0,
+                    "hit": true
+                },
+                {
+                    "test_id": "TC002",
+                    "category": "authentication",
+                    "is_negative": false,
+                    "retrieved_incident_ids": [
+                        6,
+                        2
+                    ],
+                    "similarity_scores": [
+                        0.9272113025060418,
+                        0.6583278614033148
+                    ],
+                    "precision_at_k": 0.3333,
+                    "recall_at_k": 1.0,
+                    "mrr": 1.0,
+                    "hit": true
+                },
+                {
+                    "test_id": "TC003",
+                    "category": "api_timeout",
+                    "is_negative": false,
+                    "retrieved_incident_ids": [
+                        7,
+                        2,
+                        3
+                    ],
+                    "similarity_scores": [
+                        0.9381933196484323,
+                        0.7716007409864002,
+                        0.7669533840883205
+                    ],
+                    "precision_at_k": 0.3333,
+                    "recall_at_k": 1.0,
+                    "mrr": 1.0,
+                    "hit": true
+                },
+                {
+                    "test_id": "TC004",
+                    "category": "memory",
+                    "is_negative": false,
+                    "retrieved_incident_ids": [
+                        8,
+                        2,
+                        4
+                    ],
+                    "similarity_scores": [
+                        0.8482160691024667,
+                        0.7110671183860635,
+                        0.6910327799534708
+                    ],
+                    "precision_at_k": 0.3333,
+                    "recall_at_k": 1.0,
+                    "mrr": 1.0,
+                    "hit": true
+                },
+                {
+                    "test_id": "TC005",
+                    "category": "network",
+                    "is_negative": false,
+                    "retrieved_incident_ids": [
+                        9,
+                        2,
+                        3
+                    ],
+                    "similarity_scores": [
+                        0.854300729464101,
+                        0.6775347805774905,
+                        0.6646139346669888
+                    ],
+                    "precision_at_k": 0.3333,
+                    "recall_at_k": 1.0,
+                    "mrr": 1.0,
+                    "hit": true
+                },
+                {
+                    "test_id": "TC006",
+                    "category": "payment_failure",
+                    "is_negative": true,
+                    "retrieved_incident_ids": [
+                        4,
+                        2,
+                        3
+                    ],
+                    "similarity_scores": [
+                        0.7331771522063298,
+                        0.7155457949091908,
+                        0.7071488685246292
+                    ],
+                    "false_positive": true
+                },
+                {
+                    "test_id": "TC007",
+                    "category": "file_upload",
+                    "is_negative": true,
+                    "retrieved_incident_ids": [],
+                    "similarity_scores": [],
+                    "false_positive": false
+                },
+                {
+                    "test_id": "TC008",
+                    "category": "cache_invalidation",
+                    "is_negative": true,
+                    "retrieved_incident_ids": [
+                        2,
+                        4,
+                        8
+                    ],
+                    "similarity_scores": [
+                        0.7050049602746811,
+                        0.7023550281677033,
+                        0.6853071203628496
+                    ],
+                    "false_positive": true
+                }
+            ]
+        },
+        {
+            "threshold": 0.7,
+            "positive_precision_at_3": 0.46663999999999994,
+            "positive_recall_at_3": 0.95,
+            "positive_mrr": 1.0,
+            "positive_hit_rate": 1.0,
+            "negative_false_positive_rate": 0.6666666666666666,
+            "negative_rejection_rate": 0.3333333333333333,
+            "positive_cases": 5,
+            "negative_cases": 3,
+            "case_results": [
+                {
+                    "test_id": "TC001",
+                    "category": "database",
+                    "is_negative": false,
+                    "retrieved_incident_ids": [
+                        4,
+                        2,
+                        3
+                    ],
+                    "similarity_scores": [
+                        0.8553314679658263,
+                        0.8399348650474509,
+                        0.8394105977839101
+                    ],
+                    "precision_at_k": 1.0,
+                    "recall_at_k": 0.75,
+                    "mrr": 1.0,
+                    "hit": true
+                },
+                {
+                    "test_id": "TC002",
+                    "category": "authentication",
+                    "is_negative": false,
+                    "retrieved_incident_ids": [
+                        6
+                    ],
+                    "similarity_scores": [
+                        0.9272113025060418
+                    ],
+                    "precision_at_k": 0.3333,
+                    "recall_at_k": 1.0,
+                    "mrr": 1.0,
+                    "hit": true
+                },
+                {
+                    "test_id": "TC003",
+                    "category": "api_timeout",
+                    "is_negative": false,
+                    "retrieved_incident_ids": [
+                        7,
+                        2,
+                        3
+                    ],
+                    "similarity_scores": [
+                        0.9381933196484323,
+                        0.7716007409864002,
+                        0.7669533840883205
+                    ],
+                    "precision_at_k": 0.3333,
+                    "recall_at_k": 1.0,
+                    "mrr": 1.0,
+                    "hit": true
+                },
+                {
+                    "test_id": "TC004",
+                    "category": "memory",
+                    "is_negative": false,
+                    "retrieved_incident_ids": [
+                        8,
+                        2
+                    ],
+                    "similarity_scores": [
+                        0.8482160691024667,
+                        0.7110671183860635
+                    ],
+                    "precision_at_k": 0.3333,
+                    "recall_at_k": 1.0,
+                    "mrr": 1.0,
+                    "hit": true
+                },
+                {
+                    "test_id": "TC005",
+                    "category": "network",
+                    "is_negative": false,
+                    "retrieved_incident_ids": [
+                        9
+                    ],
+                    "similarity_scores": [
+                        0.854300729464101
+                    ],
+                    "precision_at_k": 0.3333,
+                    "recall_at_k": 1.0,
+                    "mrr": 1.0,
+                    "hit": true
+                },
+                {
+                    "test_id": "TC006",
+                    "category": "payment_failure",
+                    "is_negative": true,
+                    "retrieved_incident_ids": [
+                        4,
+                        2,
+                        3
+                    ],
+                    "similarity_scores": [
+                        0.7331771522063298,
+                        0.7155457949091908,
+                        0.7071488685246292
+                    ],
+                    "false_positive": true
+                },
+                {
+                    "test_id": "TC007",
+                    "category": "file_upload",
+                    "is_negative": true,
+                    "retrieved_incident_ids": [],
+                    "similarity_scores": [],
+                    "false_positive": false
+                },
+                {
+                    "test_id": "TC008",
+                    "category": "cache_invalidation",
+                    "is_negative": true,
+                    "retrieved_incident_ids": [
+                        2,
+                        4
+                    ],
+                    "similarity_scores": [
+                        0.7050049602746811,
+                        0.7023550281677033
+                    ],
+                    "false_positive": true
+                }
+            ]
+        },
+        {
+            "threshold": 0.75,
+            "positive_precision_at_3": 0.46663999999999994,
+            "positive_recall_at_3": 0.95,
+            "positive_mrr": 1.0,
+            "positive_hit_rate": 1.0,
+            "negative_false_positive_rate": 0.0,
+            "negative_rejection_rate": 1.0,
+            "positive_cases": 5,
+            "negative_cases": 3,
+            "case_results": [
+                {
+                    "test_id": "TC001",
+                    "category": "database",
+                    "is_negative": false,
+                    "retrieved_incident_ids": [
+                        4,
+                        2,
+                        3
+                    ],
+                    "similarity_scores": [
+                        0.8553314679658263,
+                        0.8399348650474509,
+                        0.8394105977839101
+                    ],
+                    "precision_at_k": 1.0,
+                    "recall_at_k": 0.75,
+                    "mrr": 1.0,
+                    "hit": true
+                },
+                {
+                    "test_id": "TC002",
+                    "category": "authentication",
+                    "is_negative": false,
+                    "retrieved_incident_ids": [
+                        6
+                    ],
+                    "similarity_scores": [
+                        0.9272113025060418
+                    ],
+                    "precision_at_k": 0.3333,
+                    "recall_at_k": 1.0,
+                    "mrr": 1.0,
+                    "hit": true
+                },
+                {
+                    "test_id": "TC003",
+                    "category": "api_timeout",
+                    "is_negative": false,
+                    "retrieved_incident_ids": [
+                        7,
+                        2,
+                        3
+                    ],
+                    "similarity_scores": [
+                        0.9381933196484323,
+                        0.7716007409864002,
+                        0.7669533840883205
+                    ],
+                    "precision_at_k": 0.3333,
+                    "recall_at_k": 1.0,
+                    "mrr": 1.0,
+                    "hit": true
+                },
+                {
+                    "test_id": "TC004",
+                    "category": "memory",
+                    "is_negative": false,
+                    "retrieved_incident_ids": [
+                        8
+                    ],
+                    "similarity_scores": [
+                        0.8482160691024667
+                    ],
+                    "precision_at_k": 0.3333,
+                    "recall_at_k": 1.0,
+                    "mrr": 1.0,
+                    "hit": true
+                },
+                {
+                    "test_id": "TC005",
+                    "category": "network",
+                    "is_negative": false,
+                    "retrieved_incident_ids": [
+                        9
+                    ],
+                    "similarity_scores": [
+                        0.854300729464101
+                    ],
+                    "precision_at_k": 0.3333,
+                    "recall_at_k": 1.0,
+                    "mrr": 1.0,
+                    "hit": true
+                },
+                {
+                    "test_id": "TC006",
+                    "category": "payment_failure",
+                    "is_negative": true,
+                    "retrieved_incident_ids": [],
+                    "similarity_scores": [],
+                    "false_positive": false
+                },
+                {
+                    "test_id": "TC007",
+                    "category": "file_upload",
+                    "is_negative": true,
+                    "retrieved_incident_ids": [],
+                    "similarity_scores": [],
+                    "false_positive": false
+                },
+                {
+                    "test_id": "TC008",
+                    "category": "cache_invalidation",
+                    "is_negative": true,
+                    "retrieved_incident_ids": [],
+                    "similarity_scores": [],
+                    "false_positive": false
+                }
+            ]
+        },
+        {
+            "threshold": 0.8,
+            "positive_precision_at_3": 0.46663999999999994,
+            "positive_recall_at_3": 0.95,
+            "positive_mrr": 1.0,
+            "positive_hit_rate": 1.0,
+            "negative_false_positive_rate": 0.0,
+            "negative_rejection_rate": 1.0,
+            "positive_cases": 5,
+            "negative_cases": 3,
+            "case_results": [
+                {
+                    "test_id": "TC001",
+                    "category": "database",
+                    "is_negative": false,
+                    "retrieved_incident_ids": [
+                        4,
+                        2,
+                        3
+                    ],
+                    "similarity_scores": [
+                        0.8553314679658263,
+                        0.8399348650474509,
+                        0.8394105977839101
+                    ],
+                    "precision_at_k": 1.0,
+                    "recall_at_k": 0.75,
+                    "mrr": 1.0,
+                    "hit": true
+                },
+                {
+                    "test_id": "TC002",
+                    "category": "authentication",
+                    "is_negative": false,
+                    "retrieved_incident_ids": [
+                        6
+                    ],
+                    "similarity_scores": [
+                        0.9272113025060418
+                    ],
+                    "precision_at_k": 0.3333,
+                    "recall_at_k": 1.0,
+                    "mrr": 1.0,
+                    "hit": true
+                },
+                {
+                    "test_id": "TC003",
+                    "category": "api_timeout",
+                    "is_negative": false,
+                    "retrieved_incident_ids": [
+                        7
+                    ],
+                    "similarity_scores": [
+                        0.9381933196484323
+                    ],
+                    "precision_at_k": 0.3333,
+                    "recall_at_k": 1.0,
+                    "mrr": 1.0,
+                    "hit": true
+                },
+                {
+                    "test_id": "TC004",
+                    "category": "memory",
+                    "is_negative": false,
+                    "retrieved_incident_ids": [
+                        8
+                    ],
+                    "similarity_scores": [
+                        0.8482160691024667
+                    ],
+                    "precision_at_k": 0.3333,
+                    "recall_at_k": 1.0,
+                    "mrr": 1.0,
+                    "hit": true
+                },
+                {
+                    "test_id": "TC005",
+                    "category": "network",
+                    "is_negative": false,
+                    "retrieved_incident_ids": [
+                        9
+                    ],
+                    "similarity_scores": [
+                        0.854300729464101
+                    ],
+                    "precision_at_k": 0.3333,
+                    "recall_at_k": 1.0,
+                    "mrr": 1.0,
+                    "hit": true
+                },
+                {
+                    "test_id": "TC006",
+                    "category": "payment_failure",
+                    "is_negative": true,
+                    "retrieved_incident_ids": [],
+                    "similarity_scores": [],
+                    "false_positive": false
+                },
+                {
+                    "test_id": "TC007",
+                    "category": "file_upload",
+                    "is_negative": true,
+                    "retrieved_incident_ids": [],
+                    "similarity_scores": [],
+                    "false_positive": false
+                },
+                {
+                    "test_id": "TC008",
+                    "category": "cache_invalidation",
+                    "is_negative": true,
+                    "retrieved_incident_ids": [],
+                    "similarity_scores": [],
+                    "false_positive": false
+                }
+            ]
+        },
+        {
+            "threshold": 0.85,
+            "positive_precision_at_3": 0.26664,
+            "positive_recall_at_3": 0.65,
+            "positive_mrr": 0.8,
+            "positive_hit_rate": 0.8,
+            "negative_false_positive_rate": 0.0,
+            "negative_rejection_rate": 1.0,
+            "positive_cases": 5,
+            "negative_cases": 3,
+            "case_results": [
+                {
+                    "test_id": "TC001",
+                    "category": "database",
+                    "is_negative": false,
+                    "retrieved_incident_ids": [
+                        4
+                    ],
+                    "similarity_scores": [
+                        0.8553314679658263
+                    ],
+                    "precision_at_k": 0.3333,
+                    "recall_at_k": 0.25,
+                    "mrr": 1.0,
+                    "hit": true
+                },
+                {
+                    "test_id": "TC002",
+                    "category": "authentication",
+                    "is_negative": false,
+                    "retrieved_incident_ids": [
+                        6
+                    ],
+                    "similarity_scores": [
+                        0.9272113025060418
+                    ],
+                    "precision_at_k": 0.3333,
+                    "recall_at_k": 1.0,
+                    "mrr": 1.0,
+                    "hit": true
+                },
+                {
+                    "test_id": "TC003",
+                    "category": "api_timeout",
+                    "is_negative": false,
+                    "retrieved_incident_ids": [
+                        7
+                    ],
+                    "similarity_scores": [
+                        0.9381933196484323
+                    ],
+                    "precision_at_k": 0.3333,
+                    "recall_at_k": 1.0,
+                    "mrr": 1.0,
+                    "hit": true
+                },
+                {
+                    "test_id": "TC004",
+                    "category": "memory",
+                    "is_negative": false,
+                    "retrieved_incident_ids": [],
+                    "similarity_scores": [],
+                    "precision_at_k": 0.0,
+                    "recall_at_k": 0.0,
+                    "mrr": 0.0,
+                    "hit": false
+                },
+                {
+                    "test_id": "TC005",
+                    "category": "network",
+                    "is_negative": false,
+                    "retrieved_incident_ids": [
+                        9
+                    ],
+                    "similarity_scores": [
+                        0.854300729464101
+                    ],
+                    "precision_at_k": 0.3333,
+                    "recall_at_k": 1.0,
+                    "mrr": 1.0,
+                    "hit": true
+                },
+                {
+                    "test_id": "TC006",
+                    "category": "payment_failure",
+                    "is_negative": true,
+                    "retrieved_incident_ids": [],
+                    "similarity_scores": [],
+                    "false_positive": false
+                },
+                {
+                    "test_id": "TC007",
+                    "category": "file_upload",
+                    "is_negative": true,
+                    "retrieved_incident_ids": [],
+                    "similarity_scores": [],
+                    "false_positive": false
+                },
+                {
+                    "test_id": "TC008",
+                    "category": "cache_invalidation",
+                    "is_negative": true,
+                    "retrieved_incident_ids": [],
+                    "similarity_scores": [],
+                    "false_positive": false
+                }
+            ]
+        },
+        {
+            "threshold": 0.9,
+            "positive_precision_at_3": 0.13332,
+            "positive_recall_at_3": 0.4,
+            "positive_mrr": 0.4,
+            "positive_hit_rate": 0.4,
+            "negative_false_positive_rate": 0.0,
+            "negative_rejection_rate": 1.0,
+            "positive_cases": 5,
+            "negative_cases": 3,
+            "case_results": [
+                {
+                    "test_id": "TC001",
+                    "category": "database",
+                    "is_negative": false,
+                    "retrieved_incident_ids": [],
+                    "similarity_scores": [],
+                    "precision_at_k": 0.0,
+                    "recall_at_k": 0.0,
+                    "mrr": 0.0,
+                    "hit": false
+                },
+                {
+                    "test_id": "TC002",
+                    "category": "authentication",
+                    "is_negative": false,
+                    "retrieved_incident_ids": [
+                        6
+                    ],
+                    "similarity_scores": [
+                        0.9272113025060418
+                    ],
+                    "precision_at_k": 0.3333,
+                    "recall_at_k": 1.0,
+                    "mrr": 1.0,
+                    "hit": true
+                },
+                {
+                    "test_id": "TC003",
+                    "category": "api_timeout",
+                    "is_negative": false,
+                    "retrieved_incident_ids": [
+                        7
+                    ],
+                    "similarity_scores": [
+                        0.9381933196484323
+                    ],
+                    "precision_at_k": 0.3333,
+                    "recall_at_k": 1.0,
+                    "mrr": 1.0,
+                    "hit": true
+                },
+                {
+                    "test_id": "TC004",
+                    "category": "memory",
+                    "is_negative": false,
+                    "retrieved_incident_ids": [],
+                    "similarity_scores": [],
+                    "precision_at_k": 0.0,
+                    "recall_at_k": 0.0,
+                    "mrr": 0.0,
+                    "hit": false
+                },
+                {
+                    "test_id": "TC005",
+                    "category": "network",
+                    "is_negative": false,
+                    "retrieved_incident_ids": [],
+                    "similarity_scores": [],
+                    "precision_at_k": 0.0,
+                    "recall_at_k": 0.0,
+                    "mrr": 0.0,
+                    "hit": false
+                },
+                {
+                    "test_id": "TC006",
+                    "category": "payment_failure",
+                    "is_negative": true,
+                    "retrieved_incident_ids": [],
+                    "similarity_scores": [],
+                    "false_positive": false
+                },
+                {
+                    "test_id": "TC007",
+                    "category": "file_upload",
+                    "is_negative": true,
+                    "retrieved_incident_ids": [],
+                    "similarity_scores": [],
+                    "false_positive": false
+                },
+                {
+                    "test_id": "TC008",
+                    "category": "cache_invalidation",
+                    "is_negative": true,
+                    "retrieved_incident_ids": [],
+                    "similarity_scores": [],
+                    "false_positive": false
+                }
+            ]
+        }
+    ],
+    "note": "Exploratory benchmark using a small synthetic dataset. Similarity thresholds are not calibrated probabilities."
+}

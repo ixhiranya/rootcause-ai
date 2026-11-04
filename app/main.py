@@ -183,7 +183,8 @@ def run_investigation(
     historical_incidents = search_similar_historical_incidents(
         query=query,
         context=context,
-        top_k=3
+        top_k=3,
+        min_similarity=0.75
     )
 
     print(

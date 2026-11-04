@@ -281,3 +281,69 @@ def evaluate_report(
             and consistency_results["consistency_passed"]
         )
     }
+# --------------------------------------------------
+# 6. HISTORICAL INCIDENT RETRIEVAL EVALUATION
+# --------------------------------------------------
+
+def evaluate_historical_retrieval(
+    retrieved_incidents: list[dict],
+    relevant_incident_ids: list[int],
+    k: int = 3
+) -> dict:
+    """
+    Evaluate historical incident retrieval using:
+    Precision@K, Recall@K, MRR and Hit Rate@K.
+    """
+
+    if k <= 0:
+        raise ValueError("k must be greater than zero.")
+
+    if not relevant_incident_ids:
+        raise ValueError(
+            "At least one relevant incident ID is required."
+        )
+
+    relevant_ids = set(relevant_incident_ids)
+
+    retrieved_ids = [
+        incident["incident_id"]
+        for incident in retrieved_incidents[:k]
+    ]
+
+    relevant_retrieved = [
+        incident_id
+        for incident_id in retrieved_ids
+        if incident_id in relevant_ids
+    ]
+
+    unique_relevant_retrieved = set(relevant_retrieved)
+
+    precision_at_k = (
+        len(relevant_retrieved) / k
+    )
+
+    recall_at_k = (
+        len(unique_relevant_retrieved) / len(relevant_ids)
+    )
+
+    reciprocal_rank = 0.0
+
+    for rank, incident_id in enumerate(retrieved_ids, start=1):
+        if incident_id in relevant_ids:
+            reciprocal_rank = 1.0 / rank
+            break
+
+    hit_rate_at_k = (
+        1.0 if relevant_retrieved else 0.0
+    )
+
+    return {
+        "precision_at_k": round(precision_at_k, 4),
+        "recall_at_k": round(recall_at_k, 4),
+        "mrr": round(reciprocal_rank, 4),
+        "hit_rate_at_k": round(hit_rate_at_k, 4),
+        "k": k,
+        "retrieved_incident_ids": retrieved_ids,
+        "relevant_incidents_found": len(unique_relevant_retrieved),
+        "total_relevant_incidents": len(relevant_ids)
+    }
