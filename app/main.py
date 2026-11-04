@@ -8,6 +8,7 @@ from app.retrieval import IncidentRetriever
 from app.context_builder import build_context
 from app.investigator import RootCauseInvestigator
 from app.evaluation import evaluate_report
+from app.historical import search_similar_historical_incidents
 
 from app.storage import (
     save_document,
@@ -175,7 +176,26 @@ def run_investigation(
         raise ValueError(
             "No evidence available for investigation."
         )
+        # --------------------------------------------------
+    # 5.1 HISTORICAL INCIDENT RETRIEVAL
+    # --------------------------------------------------
 
+    historical_incidents = search_similar_historical_incidents(
+        query=query,
+        context=context,
+        top_k=3
+    )
+
+    print(
+        f"Retrieved {len(historical_incidents)} "
+        "similar historical incidents."
+    )
+
+    for incident in historical_incidents:
+        print(
+            f"Historical Incident ID: {incident['incident_id']} | "
+            f"Similarity: {incident['similarity_score']:.4f}"
+        )
     # --------------------------------------------------
     # 6. LLM INVESTIGATION
     # --------------------------------------------------
@@ -188,7 +208,8 @@ def run_investigation(
 
     report = investigator.investigate(
         query=query,
-        context=context
+        context=context,
+        historical_incidents=historical_incidents
     )
 
     # --------------------------------------------------
@@ -198,7 +219,8 @@ def run_investigation(
     evaluation = evaluate_report(
         report=report,
         evidence=evidence,
-        context=context
+        context=context,
+        
     )
 
     # --------------------------------------------------
@@ -243,6 +265,7 @@ def run_investigation(
 
         "investigation": report,
         "evidence": evidence,
+        "historical_similar_incidents": historical_incidents,
         "evaluation": evaluation,
 
         "persistence": {

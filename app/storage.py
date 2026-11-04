@@ -438,3 +438,140 @@ def save_incident_evaluation(
     finally:
         if connection and connection.is_connected():
             connection.close()
+
+
+def get_passed_historical_incidents():
+    """
+    Retrieve historical incidents whose evaluation passed.
+    """
+
+    connection = None
+
+    try:
+        connection = get_db_connection()
+        cursor = connection.cursor(dictionary=True)
+
+        cursor.execute(
+            """
+            SELECT
+                I.INCIDENT_ID,
+                I.QUERY_TEXT,
+                R.REPORT_ID,
+                R.REPORT_JSON,
+                R.MODEL_NAME
+            FROM INCIDENTS I
+            INNER JOIN INVESTIGATION_REPORTS R
+                ON R.INCIDENT_ID = I.INCIDENT_ID
+            WHERE EXISTS (
+                SELECT 1
+                FROM INCIDENT_EVALUATIONS E
+                WHERE E.REPORT_ID = R.REPORT_ID
+                  AND E.OVERALL_STATUS = 'PASSED'
+            )
+            ORDER BY I.INCIDENT_ID
+            """
+        )
+
+        incidents = cursor.fetchall()
+        cursor.close()
+
+        for incident in incidents:
+            report = incident["REPORT_JSON"]
+
+            if isinstance(report, str):
+                report = json.loads(report)
+
+            incident["REPORT_JSON"] = report
+
+        return incidents
+
+    finally:
+        if connection and connection.is_connected():
+            connection.close()
+
+
+def save_incident_embedding(
+    incident_id: int,
+    model_name: str,
+    embedding: list
+):
+    """Save or update a historical incident embedding."""
+
+    connection = None
+
+    try:
+        connection = get_db_connection()
+        cursor = connection.cursor()
+
+        cursor.execute(
+            """
+            INSERT INTO INCIDENT_EMBEDDINGS (
+                INCIDENT_ID,
+                MODEL_NAME,
+                EMBEDDING_VECTOR
+            )
+            VALUES (%s, %s, %s)
+            ON DUPLICATE KEY UPDATE
+                EMBEDDING_VECTOR = VALUES(EMBEDDING_VECTOR)
+            """,
+            (
+                incident_id,
+                model_name,
+                json.dumps(embedding)
+            )
+        )
+
+        connection.commit()
+        cursor.close()
+
+        return True
+
+    except Exception:
+        if connection and connection.is_connected():
+            connection.rollback()
+        raise
+
+    finally:
+        if connection and connection.is_connected():
+            connection.close()
+
+
+def get_incident_embedding(
+    incident_id: int,
+    model_name: str
+):
+    """Retrieve a cached historical incident embedding."""
+
+    connection = None
+
+    try:
+        connection = get_db_connection()
+        cursor = connection.cursor(dictionary=True)
+
+        cursor.execute(
+            """
+            SELECT EMBEDDING_VECTOR
+            FROM INCIDENT_EMBEDDINGS
+            WHERE INCIDENT_ID = %s
+              AND MODEL_NAME = %s
+            LIMIT 1
+            """,
+            (incident_id, model_name)
+        )
+
+        row = cursor.fetchone()
+        cursor.close()
+
+        if not row:
+            return None
+
+        vector = row["EMBEDDING_VECTOR"]
+
+        if isinstance(vector, str):
+            vector = json.loads(vector)
+
+        return vector
+
+    finally:
+        if connection and connection.is_connected():
+            connection.close()

@@ -34,9 +34,31 @@ class RootCauseInvestigator:
     def build_prompt(
         self,
         query: str,
-        context: str
+        context: str,
+        historical_incidents: list[dict] | None = None
     ) -> list[dict]:
+    
+            # Build historical incident context separately
+        historical_context = ""
 
+        if historical_incidents:
+            for index, incident in enumerate(historical_incidents, start=1):
+                historical_context += f"""
+                    Historical Incident H{index}:
+                    Original Query: {incident.get("query", "")}
+                    Incident Summary: {incident.get("incident_summary", "")}
+                    Probable Root Cause: {incident.get("probable_root_cause", "")}
+                    Confidence: {incident.get("confidence", "unknown")}
+                    Similarity Score: {incident.get("similarity_score", 0)}
+
+                    Recommended Actions:
+                    {json.dumps(incident.get("recommended_actions", []), indent=2)}
+
+                    Evaluation Status: {incident.get("evaluation_status", "unknown")}
+                    """
+        else:
+            historical_context = "No similar historical incidents found."
+            
         system_prompt = """
 You are RootCause AI, an expert software debugging assistant.
 
@@ -131,6 +153,32 @@ Use exact source line numbers when available.
 Never invent line numbers.
 
 If no evidence supports a conclusion, state that clearly.
+
+HISTORICAL INCIDENT RULES:
+
+1. Historical incidents are additional reference information,
+   not evidence of what happened in the current incident.
+
+2. Historical incidents have identifiers H1, H2, H3, etc.
+   Current log evidence has identifiers E1, E2, etc.
+
+3. Never use historical incident IDs (H1, H2, etc.)
+   in supporting_evidence.
+
+4. Only cite current evidence IDs (E1, E2, etc.) in
+   supporting_evidence.
+
+5. Use historical root causes and recommendations to identify
+   potentially relevant hypotheses and debugging actions.
+
+6. Do not assume that the current incident has the same root
+   cause as a historical incident, even if similarity is high.
+
+7. If historical findings conflict with current evidence,
+   prioritize current evidence.
+
+8. Historical incidents must not increase confidence unless
+   the current evidence independently supports the conclusion.
 """
 
         user_prompt = f"""
@@ -140,7 +188,12 @@ INCIDENT QUERY:
 RETRIEVED INCIDENT EVIDENCE:
 {context}
 
-Analyze the incident and return the JSON report.
+SIMILAR HISTORICAL INCIDENTS:
+{historical_context}
+
+Analyze the current incident using its retrieved evidence.
+Use historical incidents only as additional reference context.
+Return the JSON report.
 
 EVIDENCE CITATION RULES:
 
@@ -179,7 +232,8 @@ FINAL VERIFICATION BEFORE RESPONDING:
     def investigate(
         self,
         query: str,
-        context: str
+        context: str,
+        historical_incidents: list[dict] | None = None
     ) -> dict:
 
         if not query.strip():
@@ -188,7 +242,11 @@ FINAL VERIFICATION BEFORE RESPONDING:
         if not context.strip():
             raise ValueError("Investigation context cannot be empty.")
 
-        messages = self.build_prompt(query, context)
+        messages = self.build_prompt(
+            query=query,
+            context=context,
+            historical_incidents=historical_incidents
+        )
 
         payload = {
             "model": self.model,
