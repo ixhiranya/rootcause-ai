@@ -126,25 +126,44 @@ Return ONLY valid JSON using this exact structure:
 {
   "incident_summary": "Short incident summary",
   "probable_root_cause": "Most likely explanation",
-  "confidence": "high, medium, or low",
+  "confidence": "high",
+
+  "reported_symptoms": [],
+
+  "observed_symptoms": [],
+
+  "symptom_evidence_alignment": {
+    "status": "PARTIALLY_SUPPORTED",
+    "unsupported_claims": [],
+    "explanation": "Explanation of alignment between query and evidence"
+  },
+
+  "root_cause_validation": {
+    "status": "SUPPORTED",
+    "reasoning": "Why the proposed root cause is supported",
+    "contradicting_evidence": []
+  },
+
   "supporting_evidence": [
     {
       "evidence_id": "E1",
       "start_line": 3,
       "end_line": 5,
-      "observation": "Database connection pool exhausted."
+      "observation": "Observed fact from current evidence"
     }
   ],
+
   "alternative_hypotheses": [
     {
       "hypothesis": "Alternative possible explanation",
       "reason": "Why it may be relevant"
     }
   ],
+
   "recommended_actions": [
-    "First debugging action",
-    "Second debugging action"
+    "First debugging action"
   ],
+
   "missing_information": []
 }
 
@@ -179,6 +198,51 @@ HISTORICAL INCIDENT RULES:
 
 8. Historical incidents must not increase confidence unless
    the current evidence independently supports the conclusion.
+
+
+
+
+SYMPTOM AND EVIDENCE ALIGNMENT RULES:
+
+1. Extract reported_symptoms from the user's incident query.
+2. Extract observed_symptoms only from current retrieved evidence.
+3. Never assume that a reported symptom is confirmed.
+4. Compare reported symptoms against observed symptoms.
+5. Identify claims that are unsupported by current evidence.
+6. Do not invent evidence to support the user's assumptions.
+7. Historical incidents must not be used to establish current symptoms.
+
+Allowed symptom alignment statuses:
+- SUPPORTED
+- PARTIALLY_SUPPORTED
+- UNSUPPORTED
+- INCONCLUSIVE
+
+ROOT CAUSE VALIDATION RULES:
+
+1. Validate the probable root cause against current evidence.
+2. Explain which observations support the proposed root cause.
+3. Identify evidence that contradicts the proposed root cause.
+4. Do not mark a root cause SUPPORTED merely because
+   a similar historical incident exists.
+5. If evidence establishes a symptom but not its underlying
+   cause, use PARTIALLY_SUPPORTED or INCONCLUSIVE.
+6. If no reliable conclusion can be established, explicitly
+   state that further investigation is required.
+
+Allowed root cause validation statuses:
+- SUPPORTED
+- PARTIALLY_SUPPORTED
+- UNSUPPORTED
+- INCONCLUSIVE
+
+CONFIDENCE RULES:
+
+1. HIGH: Strong, direct and consistent current evidence.
+2. MEDIUM: Some supporting evidence, but important uncertainty remains.
+3. LOW: Insufficient, indirect or conflicting evidence.
+4. Historical similarity alone must never increase confidence.
+
 """
 
         user_prompt = f"""
@@ -286,6 +350,10 @@ FINAL VERIFICATION BEFORE RESPONDING:
                 "incident_summary",
                 "probable_root_cause",
                 "confidence",
+                "reported_symptoms",
+                "observed_symptoms",
+                "symptom_evidence_alignment",
+                "root_cause_validation",
                 "supporting_evidence",
                 "alternative_hypotheses",
                 "recommended_actions",
